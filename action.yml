@@ -1,0 +1,40 @@
+name: wcagc accessibility check
+description: Run wcagc automated accessibility checks in CI and compare them with a baseline.
+author: wcagc
+branding:
+  icon: check-circle
+  color: green
+inputs:
+  api-key:
+    description: Organization API key with scans:read and scans:write scopes.
+    required: true
+  urls:
+    description: One URL per line. All URLs must be on one registered site.
+    required: true
+  fail-on:
+    description: new-critical, any-critical, serious-or-worse, or none.
+    default: new-critical
+  set-baseline:
+    description: Save this completed check as a future comparison baseline.
+    default: "false"
+  wait-timeout-seconds:
+    description: Maximum wait for the check to finish.
+    default: "600"
+  api-base-url:
+    description: wcagc API origin.
+    default: https://api.wcagc.com
+  annotations:
+    description: Emit GitHub workflow annotations for findings.
+    default: "true"
+outputs:
+  verdict: { description: PASS or FAIL. }
+  check-id: { description: CI check UUID. }
+  critical-count: { description: Critical finding count. }
+  serious-count: { description: Serious finding count. }
+  moderate-count: { description: Moderate finding count. }
+  minor-count: { description: Minor finding count. }
+  new-critical-count: { description: Critical findings absent from the selected baseline. }
+  report-url: { description: Link to the wcagc report. }
+runs:
+  using: node24
+  main: dist/index.js

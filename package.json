@@ -1,0 +1,30 @@
+{
+  "name": "wcagc-ci",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/WCAG-Compliance/wcagc-ci.git"
+  },
+  "homepage": "https://wcagc.com/integrations/github",
+  "bugs": {
+    "url": "https://github.com/WCAG-Compliance/wcagc-ci/issues"
+  },
+  "bin": {
+    "wcagc-ci": "dist/cli.js"
+  },
+  "files": ["dist", "action.yml", "templates", "README.md"],
+  "engines": { "node": ">=24" },
+  "scripts": {
+    "build": "esbuild src/index.ts src/cli.ts --bundle --platform=node --target=node24 --format=esm --outdir=dist",
+    "typecheck": "tsc --noEmit",
+    "test": "esbuild test/*.test.ts --bundle --platform=node --target=node24 --format=esm --outdir=.test-dist && node --test .test-dist/*.test.js"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "@types/node": "^24.0.0",
+    "esbuild": "^0.25.0",
+    "typescript": "^5.9.0"
+  }
+}

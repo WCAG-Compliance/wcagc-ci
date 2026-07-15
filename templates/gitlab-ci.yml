@@ -1,0 +1,20 @@
+.wcagc-check:
+  image: node:24-alpine
+  variables:
+    WCAGC_FAIL_ON: new-critical
+    WCAGC_WAIT_TIMEOUT: "600"
+  script:
+    - npx --yes github:WCAG-Compliance/wcagc-ci#v1
+
+wcagc-merge-request:
+  extends: .wcagc-check
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+
+wcagc-default-branch-baseline:
+  extends: .wcagc-check
+  variables:
+    WCAGC_FAIL_ON: none
+    WCAGC_SET_BASELINE: "true"
+  rules:
+    - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH'
