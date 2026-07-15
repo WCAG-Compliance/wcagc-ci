@@ -1,15 +1,23 @@
+workflow:
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_SOURCE_PROJECT_ID == $CI_PROJECT_ID'
+    - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH'
+
 .wcagc-check:
   image: node:24-alpine
+  timeout: 15m
+  interruptible: true
   variables:
     WCAGC_FAIL_ON: new-critical
     WCAGC_WAIT_TIMEOUT: "600"
+    WCAGC_SET_BASELINE: "false"
   script:
     - npx --yes github:WCAG-Compliance/wcagc-ci#v1
 
 wcagc-merge-request:
   extends: .wcagc-check
   rules:
-    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_SOURCE_PROJECT_ID == $CI_PROJECT_ID'
 
 wcagc-default-branch-baseline:
   extends: .wcagc-check
@@ -17,4 +25,4 @@ wcagc-default-branch-baseline:
     WCAGC_FAIL_ON: none
     WCAGC_SET_BASELINE: "true"
   rules:
-    - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH'
+    - if: '$CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH'

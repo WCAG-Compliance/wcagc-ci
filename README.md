@@ -57,7 +57,7 @@ Copy [`templates/gitlab-ci.yml`](templates/gitlab-ci.yml) into your pipeline and
 - `WCAGC_API_BASE_URL` — optional; defaults to `https://api.wcagc.com`.
 - `WCAGC_WAIT_TIMEOUT` — optional positive number of seconds; defaults to 600. The legacy `WCAGC_WAIT_TIMEOUT_SECONDS` alias is also accepted.
 
-The template uses the pinned major tag `github:WCAG-Compliance/wcagc-ci#v1`, runs merge-request checks without changing the baseline, and refreshes the baseline only on the default branch. Review GitLab's protected-variable and fork-pipeline settings before enabling pipelines for external contributions.
+The template uses the pinned major tag `github:WCAG-Compliance/wcagc-ci#v1`, runs merge-request checks without changing the baseline, and refreshes the baseline only after a push to the default branch. Its workflow rules deliberately exclude fork merge requests so parent-project secrets cannot be exposed. A separate GitLab mirror or `glab` installation is not required to consume the CLI.
 
 The CLI prints a plain-text severity table, report URL, and the same automation-coverage limitation as the GitHub summary. Exit codes are `0` for PASS, `1` for a FAIL verdict or runtime/API error, and `2` for invalid configuration. It never prints the API key.
 
@@ -72,4 +72,4 @@ npm run typecheck
 npm run build
 ```
 
-Both bundles in `dist/` are committed because GitHub and GitLab execute them directly. This repository is the public release mirror for the package maintained in the wcagc platform repository. Exact release tags such as `v1.0.0` are immutable; the major `v1` tag advances only to a verified backward-compatible release.
+Both bundles in `dist/` are committed because GitHub and GitLab execute them directly. This repository is the public release mirror for the package maintained in the wcagc platform repository. The umbrella repository validates and synchronizes this tree with a write-only deploy key. After mirror CI passes, the mirror creates a new immutable exact release from `package.json` and advances the compatible major tag. A changed published tree with an already-used version is rejected, so releases require an explicit semantic version bump.
